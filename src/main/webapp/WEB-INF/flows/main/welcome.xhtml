@@ -14,6 +14,14 @@
 
 	<ui:define name="body">
 		<h:outputText value=" JSF works great!!" />
+
+		<h:form>
+			<h3 style="margin-top: 0">Client</h3>
+			<p:clock />
+
+			<h3>Server</h3>
+			<p:clock pattern="HH:mm:ss dd.MM.yyyy" mode="server" />
+		</h:form>
 	</ui:define>
 
 </ui:composition>
