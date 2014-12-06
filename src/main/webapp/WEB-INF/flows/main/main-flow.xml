@@ -3,10 +3,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/webflow
         http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
-<!--  -->
+	
+	<!-- Flow: on -->
 	<view-state id="welcome" view="welcome.xhtml">
+		<transition on="newUser" to="signUp" />
 	</view-state>
 
-	
+	<view-state id="signUp" view="signUp.xhtml">
+
+		<transition on="backToSignIn" to="welcome" />
+	</view-state>
 
 </flow>
