@@ -1,15 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd         
                         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<import resource="datasource-config.xml"/>
-	<import resource="webflow-config.xml"/>
-</beans>
+
+<context:annotation-config />
+<context:component-scan base-package= "com.ap.jee.webapp.*"  />  
+
+		<import resource="datasource-config.xml" />
+        <import resource="webflow-config.xml" />        
+       	<import resource="security-config.xml" />
  
+
+        <!-- DAO declarations -->
+         <bean id="iUserDao" class="com.av.jee.webapp.dao.UserJpaDao"></bean>
+      
+        
+        <!-- Services declarations-->
+         <bean id="iUserService"
+        	class="com.av.jee.webapp.service.impl.UserServiceImpl">
+        	<property name="userDao" ref="iUserDao" />
+        </bean>
+ 
+       
+        <bean id="iUserAuthenticationProviderService"
+        	class="com.av.jee.webapp.service.impl.UserAuthenticationProviderServiceImpl">
+        	<property name="authenticationManager" ref="authenticationManager" />
+        </bean>
+       
+</beans>
+
 
 
 

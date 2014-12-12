@@ -3,15 +3,31 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/webflow
         http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
-	
-	<!-- Flow: on -->
+
+	<!-- Initialize the user which is used as model in the view ex. SignUp.xhtml -->
+	<var name="user" class="com.av.jee.webapp.domain.UserEntity" />
+
+	<!-- Flow: on startup the program will first displayed welcome page -->
 	<view-state id="welcome" view="welcome.xhtml">
 		<transition on="newUser" to="signUp" />
 	</view-state>
 
-	<view-state id="signUp" view="signUp.xhtml">
-
+	<!-- Flow: the signUp view uses the user model to create an User in Database. 
+		when confirmSignUp: the user will be created using the createUser() method 
+		from UserServiceImpl class -->
+	<view-state id="signUp" view="signUp.xhtml" model="user">
 		<transition on="backToSignIn" to="welcome" />
+		<transition on="confirmSignUp" to="authentication">
+			<evaluate expression="iUserService.createUser(user)" />
+		</transition>
 	</view-state>
+
+	<action-state id="authentication">
+		<evaluate expression="iUserAuthenticationProviderService.processUserAuthentication(user)" />
+		<transition on="yes" to="finish" />
+		<transition on="no" to="welcome" />
+	</action-state>
+	
+	<end-state id="finish"  view="externalRedirect:account" />
 
 </flow>
