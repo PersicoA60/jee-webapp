@@ -8,8 +8,12 @@
 	<var name="user" class="com.av.jee.webapp.domain.UserEntity" />
 
 	<!-- Flow: on startup the program will first displayed welcome page -->
-	<view-state id="welcome" view="welcome.xhtml">
+	<view-state id="welcome" view="welcome.xhtml" model="user">
 		<transition on="newUser" to="signUp" />
+		<transition on="confirmSignIn" to="finish">
+			<evaluate
+				expression="iUserAuthenticationProviderService.processUserAuthentication(user)" />
+		</transition>
 	</view-state>
 
 	<!-- Flow: the signUp view uses the user model to create an User in Database. 
@@ -23,11 +27,12 @@
 	</view-state>
 
 	<action-state id="authentication">
-		<evaluate expression="iUserAuthenticationProviderService.processUserAuthentication(user)" />
+		<evaluate
+			expression="iUserAuthenticationProviderService.processUserAuthentication(user)" />
 		<transition on="yes" to="finish" />
 		<transition on="no" to="welcome" />
 	</action-state>
-	
-	<end-state id="finish"  view="externalRedirect:account" />
+
+	<end-state id="finish" view="externalRedirect:account" />
 
 </flow>

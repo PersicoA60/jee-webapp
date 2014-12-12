@@ -37,17 +37,24 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 	}
 
 	public boolean createUser(UserEntity userEntity) {
-		try {
-			System.out.println("createUser: " + userEntity.getUserName() +  " Id:" + userEntity.getId());
-			userDao.save(userEntity);
-			return true;
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-					e.getMessage(), "Sorry !!"));
+
+		if (!userDao.checkAvailable(userEntity.getUserName())) {
+			FacesMessage message = constructErrorMessage(String.format("Username '%s' is not available",
+					userEntity.getUserName()), null);
+			getFacesContext().addMessage(null, message);
+			
 			return false;
 		}
-
+		try {
+			userDao.save(userEntity);
+			
+		} catch (Exception e) {
+			
+			FacesMessage message = constructFatalMessage(e.getMessage(), null);
+			getFacesContext().addMessage(null, message);
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -56,7 +63,7 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 	public UserDetails loadUserByUsername(String userName)
 			throws UsernameNotFoundException {
-		
+
 		UserEntity user = userDao.loadUserByUserName(userName);
 
 		if (user == null) {
@@ -74,4 +81,19 @@ public class UserServiceImpl implements IUserService, UserDetailsService {
 
 	}
 
+	protected FacesMessage constructErrorMessage(String msg, String detail) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, detail);
+	}
+	
+	protected FacesMessage constructInfoMessage(String msg, String detail) {
+		return new FacesMessage(FacesMessage.SEVERITY_INFO, msg, detail);
+	}
+	
+	protected FacesMessage constructFatalMessage(String msg, String detail) {
+		return new FacesMessage(FacesMessage.SEVERITY_FATAL, msg, detail);
+	}
+	
+	protected FacesContext getFacesContext() {
+		return FacesContext.getCurrentInstance();
+	}
 }
