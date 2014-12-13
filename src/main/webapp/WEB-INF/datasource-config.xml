@@ -8,7 +8,7 @@
 
 
  
- 
+ 	<!-- load the data source property to connect to the database -->
 	<context:property-placeholder location="classpath:datasource.properties" />
 
 	<bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource"
